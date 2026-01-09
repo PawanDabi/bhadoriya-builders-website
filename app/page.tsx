@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useContactModal } from "@/contexts/ContactModalContext";
+import Logo from "@/components/Logo";
 
 // About section images carousel - MOVED OUTSIDE COMPONENT
 const aboutImages = [
@@ -52,6 +53,10 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [currentAboutImage, setCurrentAboutImage] = useState(0);
   const [currentServiceImages, setCurrentServiceImages] = useState([0, 0, 0]); // Track current image for each service card
+  const [aboutInView, setAboutInView] = useState(false);
+  const [servicesInView, setServicesInView] = useState(false);
+  const [portfolioInView, setPortfolioInView] = useState(false);
+  const [testimonialsInView, setTestimonialsInView] = useState(false);
   const { openModal } = useContactModal();
 
   useEffect(() => {
@@ -99,27 +104,229 @@ export default function Home() {
     return () => intervals.forEach(clearInterval);
   }, []);
 
+  // Intersection Observer for About section animation - triggers every time
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // Set to true when in view, false when out of view - triggers every time
+          setAboutInView(entry.isIntersecting);
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    const aboutSection = document.getElementById("about-section");
+    if (aboutSection) {
+      observer.observe(aboutSection);
+    }
+
+    return () => {
+      if (aboutSection) {
+        observer.unobserve(aboutSection);
+      }
+    };
+  }, []);
+
+  // Intersection Observer for Services section animation - triggers every time
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setServicesInView(entry.isIntersecting);
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    const servicesSection = document.getElementById("services-section");
+    if (servicesSection) {
+      observer.observe(servicesSection);
+    }
+
+    return () => {
+      if (servicesSection) {
+        observer.unobserve(servicesSection);
+      }
+    };
+  }, []);
+
+  // Intersection Observer for Portfolio section animation - triggers every time
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setPortfolioInView(entry.isIntersecting);
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    const portfolioSection = document.getElementById("portfolio-section");
+    if (portfolioSection) {
+      observer.observe(portfolioSection);
+    }
+
+    return () => {
+      if (portfolioSection) {
+        observer.unobserve(portfolioSection);
+      }
+    };
+  }, []);
+
+  // Intersection Observer for Testimonials section animation - triggers every time
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setTestimonialsInView(entry.isIntersecting);
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    const testimonialsSection = document.getElementById("testimonials-section");
+    if (testimonialsSection) {
+      observer.observe(testimonialsSection);
+    }
+
+    return () => {
+      if (testimonialsSection) {
+        observer.unobserve(testimonialsSection);
+      }
+    };
+  }, []);
+
   return (
     <div className="bg-white">
+      {/* Global Animation Styles for Construction Elements */}
+      <style jsx global>{`
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-15px);
+          }
+        }
+
+        @keyframes sway {
+          0%, 100% {
+            transform: rotate(-3deg);
+          }
+          50% {
+            transform: rotate(3deg);
+          }
+        }
+
+        @keyframes slide {
+          0%, 100% {
+            transform: translateX(0px);
+          }
+          50% {
+            transform: translateX(15px);
+          }
+        }
+
+        @keyframes hammer {
+          0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          25% {
+            transform: translateY(-8px) rotate(-5deg);
+          }
+          50% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          75% {
+            transform: translateY(-5px) rotate(3deg);
+          }
+        }
+
+        @keyframes drift {
+          0%, 100% {
+            transform: translate(0px, 0px);
+          }
+          25% {
+            transform: translate(8px, -8px);
+          }
+          50% {
+            transform: translate(0px, -12px);
+          }
+          75% {
+            transform: translate(-8px, -8px);
+          }
+        }
+
+        @keyframes rotate {
+          0%, 100% {
+            transform: rotate(0deg);
+          }
+          25% {
+            transform: rotate(-8deg);
+          }
+          50% {
+            transform: rotate(0deg);
+          }
+          75% {
+            transform: rotate(8deg);
+          }
+        }
+
+        @keyframes bounce-slow {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-12px);
+          }
+        }
+
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-sway {
+          animation: sway 5s ease-in-out infinite;
+        }
+
+        .animate-slide {
+          animation: slide 7s ease-in-out infinite;
+        }
+
+        .animate-hammer {
+          animation: hammer 4s ease-in-out infinite;
+        }
+
+        .animate-drift {
+          animation: drift 8s ease-in-out infinite;
+        }
+
+        .animate-rotate {
+          animation: rotate 6s ease-in-out infinite;
+        }
+
+        .animate-bounce-slow {
+          animation: bounce-slow 5s ease-in-out infinite;
+        }
+      `}</style>
+
       {/* Hero Section - Full Screen with Real Professional Image */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image - Using professional construction image */}
+        {/* Background Image - Construction Site Sunset Silhouette */}
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop"
-            alt="Luxury Modern Home"
+            src="/images/hero-sunset.png"
+            alt="Construction Site at Sunset"
             fill
-            className="object-cover brightness-[0.85]"
+            className="object-cover"
             priority
             quality={100}
           />
         </div>
 
-        {/* Glassmorphism Overlay - Frosted Glass Effect */}
-        <div className="absolute inset-0 backdrop-blur-sm bg-gradient-to-r from-black/40 via-black/20 to-transparent"></div>
-
-        {/* Additional subtle glass layer for depth */}
-        <div className="absolute inset-0 bg-white/5"></div>
+        {/* Minimal Overlay with slight blur */}
+        <div className="absolute inset-0 backdrop-blur-[2px] bg-gradient-to-r from-black/30 via-black/15 to-transparent"></div>
 
         {/* Content */}
         <div className="relative z-10 container-custom text-white px-8">
@@ -159,50 +366,278 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trust Indicators */}
-      <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-        <div className="container-custom">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { number: "25+", label: "Years Experience", icon: "🏆" },
-              { number: "500+", label: "Projects Delivered", icon: "🏗️" },
-              { number: "100%", label: "Satisfaction Rate", icon: "⭐" },
-              { number: "50+", label: "Expert Team", icon: "👷" },
-            ].map((stat, i) => (
-              <div
-                key={i}
-                className="text-center group cursor-pointer transform hover:scale-105 transition-all duration-300"
-              >
-                <div className="text-5xl mb-3">{stat.icon}</div>
-                <div className="text-5xl md:text-6xl font-bold text-golden-400 mb-2 group-hover:text-golden-300 transition-colors">
-                  {stat.number}
-                </div>
-                <div className="text-gray-300 text-lg">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* About Section */}
-      <section className="py-24 bg-white">
-        <div className="container-custom">
+      <section id="about-section" className="relative py-24 bg-white overflow-hidden">
+        {/* OPTION 1: Blueprint Architecture Pattern */}
+        <div className="absolute inset-0 w-full h-full opacity-[0.15]">
+          {/* Grid Lines */}
+          <div className="absolute inset-0" style={{
+            backgroundImage: `
+              linear-gradient(to right, #d4af37 1px, transparent 1px),
+              linear-gradient(to bottom, #d4af37 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px',
+            backgroundPosition: '0 25px'
+          }}></div>
+
+          {/* Geometrical Shapes */}
+
+          {/* Circle - Top Left */}
+          <svg className="absolute top-20 left-1/4 w-16 h-16 opacity-20" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* Triangle - Center */}
+          <svg className="absolute top-1/3 left-1/2 w-20 h-20 opacity-20" viewBox="0 0 100 100">
+            <polygon points="50,10 90,85 10,85" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="50" y1="10" x2="50" y2="85" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* Hexagon - Bottom Right */}
+          <svg className="absolute bottom-32 right-1/4 w-20 h-20 opacity-20" viewBox="0 0 100 100">
+            <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="50" cy="50" r="3" fill="#d4af37"/>
+          </svg>
+
+          {/* Rectangle - Top Center */}
+          <svg className="absolute top-24 left-2/3 w-24 h-16 opacity-20" viewBox="0 0 120 80">
+            <rect x="10" y="10" width="100" height="60" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="10" y1="10" x2="110" y2="70" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="110" y1="10" x2="10" y2="70" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* Square - Bottom Left */}
+          <svg className="absolute bottom-40 left-1/3 w-16 h-16 opacity-20" viewBox="0 0 100 100">
+            <rect x="20" y="20" width="60" height="60" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="35" y="35" width="30" height="30" fill="none" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* Compass Symbol */}
+          <svg className="absolute top-10 right-10 w-24 h-24 opacity-20" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="50" y1="5" x2="50" y2="25" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="50" y1="75" x2="50" y2="95" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="5" y1="50" x2="25" y2="50" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="75" y1="50" x2="95" y2="50" stroke="#d4af37" strokeWidth="2"/>
+            <polygon points="50,20 55,50 50,45 45,50" fill="#d4af37"/>
+          </svg>
+
+          {/* Ruler Symbol */}
+          <svg className="absolute bottom-10 left-10 w-32 h-8 opacity-20" viewBox="0 0 200 40">
+            <rect x="0" y="0" width="200" height="40" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="20" y1="0" x2="20" y2="15" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="40" y1="0" x2="40" y2="20" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="60" y1="0" x2="60" y2="15" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="80" y1="0" x2="80" y2="20" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="100" y1="0" x2="100" y2="25" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="120" y1="0" x2="120" y2="15" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="140" y1="0" x2="140" y2="20" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="160" y1="0" x2="160" y2="15" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="180" y1="0" x2="180" y2="20" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* Corner Brackets */}
+          <svg className="absolute top-5 left-5 w-16 h-16 opacity-50" viewBox="0 0 50 50">
+            <polyline points="15,0 0,0 0,15" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+          <svg className="absolute top-5 right-5 w-16 h-16 opacity-50" viewBox="0 0 50 50">
+            <polyline points="35,0 50,0 50,15" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+          <svg className="absolute bottom-5 left-5 w-16 h-16 opacity-50" viewBox="0 0 50 50">
+            <polyline points="15,50 0,50 0,35" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+          <svg className="absolute bottom-5 right-5 w-16 h-16 opacity-50" viewBox="0 0 50 50">
+            <polyline points="35,50 50,50 50,35" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+        </div>
+
+        {/* Real Construction Instruments - More Visible */}
+        <div className="absolute inset-0 w-full h-full opacity-[0.35] z-20">
+          {/* 1. Measuring Tape - Top Left */}
+          <svg className="absolute top-1/4 left-20 w-32 h-32 animate-float" viewBox="0 0 120 120">
+            {/* Tape body */}
+            <rect x="30" y="30" width="60" height="50" rx="8" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <circle cx="60" cy="55" r="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            {/* Tape extending */}
+            <rect x="85" y="48" width="20" height="14" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="105" y1="50" x2="105" y2="62" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="98" y1="50" x2="98" y2="62" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="92" y1="50" x2="92" y2="57" stroke="#d4af37" strokeWidth="1"/>
+            {/* Clip hook */}
+            <path d="M 105 52 L 110 52 L 110 60 L 105 60" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            {/* Detail lines */}
+            <line x1="40" y1="42" x2="55" y2="42" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="40" y1="50" x2="50" y2="50" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* 2. Spirit Level - Top Right */}
+          <svg className="absolute top-16 right-24 w-36 h-24 animate-sway" viewBox="0 0 140 80">
+            {/* Level body */}
+            <rect x="10" y="25" width="120" height="30" rx="4" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Bubble vial */}
+            <ellipse cx="70" cy="40" rx="20" ry="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="70" cy="40" r="4" fill="#d4af37"/>
+            {/* End caps */}
+            <rect x="8" y="23" width="8" height="34" rx="2" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="124" y="23" width="8" height="34" rx="2" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            {/* Measurement marks */}
+            <line x1="40" y1="40" x2="40" y2="48" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="100" y1="40" x2="100" y2="48" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* 3. Trowel - Top Right Side */}
+          <svg className="absolute top-20 right-1/3 w-28 h-32 animate-bounce-slow" viewBox="0 0 100 120">
+            {/* Blade */}
+            <path d="M 50 20 L 80 45 L 70 75 L 30 75 L 20 45 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Handle connection */}
+            <rect x="45" y="75" width="10" height="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            {/* Handle */}
+            <rect x="40" y="83" width="20" height="30" rx="10" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Grip lines */}
+            <line x1="45" y1="88" x2="55" y2="88" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="45" y1="93" x2="55" y2="93" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="45" y1="98" x2="55" y2="98" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="45" y1="103" x2="55" y2="103" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* 4. Power Drill - Middle Right */}
+          <svg className="absolute top-1/2 right-32 w-32 h-28 animate-hammer" viewBox="0 0 120 100">
+            {/* Drill body */}
+            <rect x="30" y="35" width="50" height="25" rx="3" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Chuck/nose */}
+            <rect x="80" y="38" width="15" height="19" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="102" cy="47.5" r="5" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            {/* Drill bit */}
+            <line x1="107" y1="47.5" x2="115" y2="47.5" stroke="#d4af37" strokeWidth="2"/>
+            {/* Handle/Grip */}
+            <path d="M 30 60 L 20 70 L 20 80 L 30 85 L 35 80 L 35 65 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Trigger */}
+            <rect x="27" y="65" width="6" height="10" rx="1" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+            {/* Battery pack */}
+            <rect x="32" y="60" width="15" height="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+
+          {/* 5. Hand Saw - Bottom Right */}
+          <svg className="absolute bottom-16 right-20 w-40 h-28 animate-slide" viewBox="0 0 150 100">
+            {/* Saw blade */}
+            <path d="M 20 40 L 120 30 L 120 35 L 20 45 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Saw teeth */}
+            <path d="M 30 45 L 35 50 L 40 45 L 45 50 L 50 45 L 55 50 L 60 45 L 65 50 L 70 45 L 75 50 L 80 45 L 85 50 L 90 45 L 95 50 L 100 45 L 105 50 L 110 45 L 115 50 L 120 45"
+                  fill="none" stroke="#d4af37" strokeWidth="2"/>
+            {/* Handle */}
+            <path d="M 20 25 Q 15 32.5, 20 40 L 35 40 L 35 25 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Handle grip */}
+            <circle cx="25" cy="32.5" r="4" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* 6. Shovel - Bottom Left */}
+          <svg className="absolute bottom-12 left-20 w-28 h-36 animate-drift" viewBox="0 0 100 140">
+            {/* Blade */}
+            <path d="M 40 90 L 35 110 Q 50 120, 65 110 L 60 90 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Socket */}
+            <rect x="45" y="80" width="10" height="15" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            {/* Handle/shaft */}
+            <line x1="50" y1="80" x2="50" y2="20" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* D-Handle */}
+            <path d="M 50 20 L 40 20 Q 35 20, 35 25 L 35 35 Q 35 40, 40 40 L 50 40" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Handle grip */}
+            <line x1="38" y1="25" x2="38" y2="35" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="42" y1="25" x2="42" y2="35" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="46" y1="25" x2="46" y2="35" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* 7. Safety Helmet with Goggles - Middle Left */}
+          <svg className="absolute top-1/2 left-28 w-32 h-28 animate-rotate" viewBox="0 0 120 120">
+            {/* Helmet dome */}
+            <path d="M 25 70 Q 25 35, 60 25 Q 95 35, 95 70" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Helmet brim */}
+            <ellipse cx="60" cy="70" rx="38" ry="10" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Goggles strap */}
+            <path d="M 30 50 Q 60 45, 90 50" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            {/* Goggles lenses */}
+            <ellipse cx="45" cy="55" rx="10" ry="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <ellipse cx="75" cy="55" rx="10" ry="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            {/* Bridge */}
+            <line x1="55" y1="55" x2="65" y2="55" stroke="#d4af37" strokeWidth="2"/>
+            {/* Ventilation slots */}
+            <line x1="50" y1="38" x2="55" y2="38" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="65" y1="38" x2="70" y2="38" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* 8. Adjustable Wrench - Top Left 2 */}
+          <svg className="absolute top-1/3 left-1/4 w-32 h-28 animate-float" viewBox="0 0 130 100">
+            {/* Wrench head fixed jaw */}
+            <path d="M 20 45 L 20 35 L 35 35 L 35 25 L 45 25 L 45 55 L 35 55 L 35 45 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Movable jaw */}
+            <rect x="30" y="30" width="8" height="20" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            {/* Adjustment screw */}
+            <circle cx="55" cy="40" r="5" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            {/* Handle */}
+            <rect x="45" y="35" width="70" height="10" rx="2" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Handle texture */}
+            <line x1="60" y1="37" x2="60" y2="43" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="70" y1="37" x2="70" y2="43" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="80" y1="37" x2="80" y2="43" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="90" y1="37" x2="90" y2="43" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* 9. Stacked Bricks - Bottom Center */}
+          <svg className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-32 h-28 animate-slide" viewBox="0 0 120 100">
+            {/* Bottom brick */}
+            <rect x="20" y="60" width="80" height="20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="60" y1="60" x2="60" y2="80" stroke="#d4af37" strokeWidth="2"/>
+            {/* Middle brick */}
+            <rect x="30" y="40" width="60" height="20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="60" y1="40" x2="60" y2="60" stroke="#d4af37" strokeWidth="2"/>
+            {/* Top brick */}
+            <rect x="40" y="20" width="40" height="20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Holes in bricks */}
+            <rect x="35" y="65" width="8" height="10" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+            <rect x="52" y="65" width="8" height="10" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+            <rect x="68" y="65" width="8" height="10" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* 10. Wheelbarrow - Bottom Right 2 */}
+          <svg className="absolute bottom-10 right-1/4 w-36 h-32 animate-drift" viewBox="0 0 140 120">
+            {/* Wheel */}
+            <circle cx="50" cy="90" r="20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <circle cx="50" cy="90" r="12" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="50" cy="90" r="4" fill="#d4af37"/>
+            {/* Spokes */}
+            <line x1="50" y1="70" x2="50" y2="110" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="30" y1="90" x2="70" y2="90" stroke="#d4af37" strokeWidth="1.5"/>
+            {/* Tray/bucket */}
+            <path d="M 50 90 L 60 70 L 70 50 L 110 50 L 115 60 L 115 70 L 60 70 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Handles */}
+            <line x1="110" y1="50" x2="115" y2="30" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="115" y1="70" x2="120" y2="50" stroke="#d4af37" strokeWidth="2.5"/>
+            {/* Handle grips */}
+            <circle cx="115" cy="27" r="3" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="120" cy="47" r="3" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+        </div>
+
+        <div className="container-custom relative z-30">
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <span className="text-golden-500 font-semibold tracking-wider uppercase text-sm">
+            {/* Left Side - Animated Text Content */}
+            <div className={`transform transition-all duration-1000 ${aboutInView ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}`}>
+              <span className="text-golden-500 font-semibold tracking-wider uppercase text-5xl" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2)' }}>
                 About Us
               </span>
-              <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mt-4 mb-6 leading-tight">
+              <h2 className={`text-5xl md:text-6xl font-bold text-gray-900 mt-4 mb-6 leading-tight transition-all duration-1000 delay-100 ${aboutInView ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}`} style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.2)' }}>
                 Crafting Excellence Since 1999
               </h2>
-              <p className="text-xl text-gray-600 mb-6 leading-relaxed">
+              <p className={`text-xl text-gray-600 mb-6 leading-relaxed transition-all duration-1000 delay-200 ${aboutInView ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}`}>
                 We are more than builders—we are craftsmen dedicated to turning architectural dreams into stunning realities.
               </p>
-              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+              <p className={`text-lg text-gray-600 mb-8 leading-relaxed transition-all duration-1000 delay-300 ${aboutInView ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}`}>
                 With over two decades of experience, our team has successfully delivered 500+ premium residential and commercial projects, earning the trust of clients nationwide.
               </p>
 
-              <div className="space-y-4 mb-8">
+              <div className={`space-y-4 mb-8 transition-all duration-1000 delay-400 ${aboutInView ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}`}>
                 {[
                   "Premium Quality Materials",
                   "On-Time Project Delivery",
@@ -220,7 +655,7 @@ export default function Home() {
                 ))}
               </div>
 
-              <Link href="/about" className="inline-flex items-center text-golden-600 hover:text-golden-700 font-semibold text-lg group">
+              <Link href="/about" className={`inline-flex items-center text-golden-600 hover:text-golden-700 font-semibold text-lg group transition-all duration-1000 delay-500 ${aboutInView ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}`}>
                 Learn More About Us
                 <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -228,7 +663,8 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="relative">
+            {/* Right Side - Animated Image */}
+            <div className={`relative transform transition-all duration-1000 delay-300 ${aboutInView ? 'translate-x-0 opacity-100' : 'translate-x-20 opacity-0'}`}>
               <div className="relative h-[600px] rounded-2xl overflow-hidden shadow-2xl">
                 {/* Auto-changing image carousel */}
                 {aboutImages.map((image, index) => (
@@ -263,20 +699,206 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-              <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-golden-400 rounded-2xl -z-10 animate-pulse"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Services Section */}
-      <section className="py-24 bg-gray-50">
-        <div className="container-custom">
-          <div className="text-center mb-16">
-            <span className="text-golden-500 font-semibold tracking-wider uppercase text-sm">
+      <section id="services-section" className="relative py-24 bg-white overflow-hidden">
+        {/* Blueprint Background - Same as About Us */}
+        <div className="absolute inset-0 w-full h-full opacity-[0.15]">
+          {/* Grid Lines */}
+          <div className="absolute inset-0" style={{
+            backgroundImage: `
+              linear-gradient(to right, #d4af37 1px, transparent 1px),
+              linear-gradient(to bottom, #d4af37 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px',
+            backgroundPosition: '0 25px'
+          }}></div>
+
+          {/* Geometrical Shapes */}
+          <svg className="absolute top-20 left-1/4 w-16 h-16 opacity-20" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          <svg className="absolute top-1/3 left-1/2 w-20 h-20 opacity-20" viewBox="0 0 100 100">
+            <polygon points="50,10 90,85 10,85" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="50" y1="10" x2="50" y2="85" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          <svg className="absolute bottom-32 right-1/4 w-20 h-20 opacity-20" viewBox="0 0 100 100">
+            <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="50" cy="50" r="3" fill="#d4af37"/>
+          </svg>
+
+          {/* Compass Symbol */}
+          <svg className="absolute top-10 right-10 w-24 h-24 opacity-20" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="50" y1="5" x2="50" y2="25" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="50" y1="75" x2="50" y2="95" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="5" y1="50" x2="25" y2="50" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="75" y1="50" x2="95" y2="50" stroke="#d4af37" strokeWidth="2"/>
+            <polygon points="50,20 55,50 50,45 45,50" fill="#d4af37"/>
+          </svg>
+
+          {/* Ruler Symbol */}
+          <svg className="absolute bottom-10 left-10 w-32 h-8 opacity-20" viewBox="0 0 200 40">
+            <rect x="0" y="0" width="200" height="40" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="20" y1="0" x2="20" y2="15" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="40" y1="0" x2="40" y2="20" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="60" y1="0" x2="60" y2="15" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="80" y1="0" x2="80" y2="20" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="100" y1="0" x2="100" y2="25" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="120" y1="0" x2="120" y2="15" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="140" y1="0" x2="140" y2="20" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="160" y1="0" x2="160" y2="15" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="180" y1="0" x2="180" y2="20" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* Corner Brackets */}
+          <svg className="absolute top-5 left-5 w-16 h-16 opacity-50" viewBox="0 0 50 50">
+            <polyline points="15,0 0,0 0,15" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+          <svg className="absolute top-5 right-5 w-16 h-16 opacity-50" viewBox="0 0 50 50">
+            <polyline points="35,0 50,0 50,15" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+          <svg className="absolute bottom-5 left-5 w-16 h-16 opacity-50" viewBox="0 0 50 50">
+            <polyline points="15,50 0,50 0,35" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+          <svg className="absolute bottom-5 right-5 w-16 h-16 opacity-50" viewBox="0 0 50 50">
+            <polyline points="35,50 50,50 50,35" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+        </div>
+
+        {/* Real Construction Instruments - Same as About Us */}
+        <div className="absolute inset-0 w-full h-full opacity-[0.35] z-20">
+          {/* 1. Measuring Tape - Top Left */}
+          <svg className="absolute top-1/4 left-20 w-32 h-32 animate-float" viewBox="0 0 120 120">
+            <rect x="30" y="30" width="60" height="50" rx="8" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <circle cx="60" cy="55" r="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="85" y="48" width="20" height="14" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="105" y1="50" x2="105" y2="62" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="98" y1="50" x2="98" y2="62" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="92" y1="50" x2="92" y2="57" stroke="#d4af37" strokeWidth="1"/>
+            <path d="M 105 52 L 110 52 L 110 60 L 105 60" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="40" y1="42" x2="55" y2="42" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="40" y1="50" x2="50" y2="50" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* 2. Spirit Level - Top Right */}
+          <svg className="absolute top-16 right-24 w-36 h-24 animate-sway" viewBox="0 0 140 80">
+            <rect x="10" y="25" width="120" height="30" rx="4" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <ellipse cx="70" cy="40" rx="20" ry="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="70" cy="40" r="4" fill="#d4af37"/>
+            <rect x="8" y="23" width="8" height="34" rx="2" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="124" y="23" width="8" height="34" rx="2" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="40" y1="40" x2="40" y2="48" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="100" y1="40" x2="100" y2="48" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* 3. Trowel - Top Right Side */}
+          <svg className="absolute top-20 right-1/3 w-28 h-32 animate-bounce-slow" viewBox="0 0 100 120">
+            <path d="M 50 20 L 80 45 L 70 75 L 30 75 L 20 45 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <rect x="45" y="75" width="10" height="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="40" y="83" width="20" height="30" rx="10" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="45" y1="88" x2="55" y2="88" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="45" y1="93" x2="55" y2="93" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="45" y1="98" x2="55" y2="98" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="45" y1="103" x2="55" y2="103" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* 4. Power Drill - Middle Right */}
+          <svg className="absolute top-1/2 right-32 w-32 h-28 animate-hammer" viewBox="0 0 120 100">
+            <rect x="30" y="35" width="50" height="25" rx="3" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <rect x="80" y="38" width="15" height="19" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="102" cy="47.5" r="5" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="107" y1="47.5" x2="115" y2="47.5" stroke="#d4af37" strokeWidth="2"/>
+            <path d="M 30 60 L 20 70 L 20 80 L 30 85 L 35 80 L 35 65 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <rect x="27" y="65" width="6" height="10" rx="1" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+            <rect x="32" y="60" width="15" height="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+
+          {/* 5. Hand Saw - Bottom Right */}
+          <svg className="absolute bottom-16 right-20 w-40 h-28 animate-slide" viewBox="0 0 150 100">
+            <path d="M 20 40 L 120 30 L 120 35 L 20 45 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <path d="M 30 45 L 35 50 L 40 45 L 45 50 L 50 45 L 55 50 L 60 45 L 65 50 L 70 45 L 75 50 L 80 45 L 85 50 L 90 45 L 95 50 L 100 45 L 105 50 L 110 45 L 115 50 L 120 45"
+                  fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <path d="M 20 25 Q 15 32.5, 20 40 L 35 40 L 35 25 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <circle cx="25" cy="32.5" r="4" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* 6. Shovel - Bottom Left */}
+          <svg className="absolute bottom-12 left-20 w-28 h-36 animate-drift" viewBox="0 0 100 140">
+            <path d="M 40 90 L 35 110 Q 50 120, 65 110 L 60 90 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <rect x="45" y="80" width="10" height="15" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="50" y1="80" x2="50" y2="20" stroke="#d4af37" strokeWidth="2.5"/>
+            <path d="M 50 20 L 40 20 Q 35 20, 35 25 L 35 35 Q 35 40, 40 40 L 50 40" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="38" y1="25" x2="38" y2="35" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="42" y1="25" x2="42" y2="35" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="46" y1="25" x2="46" y2="35" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* 7. Safety Helmet with Goggles - Middle Left */}
+          <svg className="absolute top-1/2 left-28 w-32 h-28 animate-rotate" viewBox="0 0 120 120">
+            <path d="M 25 70 Q 25 35, 60 25 Q 95 35, 95 70" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <ellipse cx="60" cy="70" rx="38" ry="10" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <path d="M 30 50 Q 60 45, 90 50" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <ellipse cx="45" cy="55" rx="10" ry="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <ellipse cx="75" cy="55" rx="10" ry="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="55" y1="55" x2="65" y2="55" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="50" y1="38" x2="55" y2="38" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="65" y1="38" x2="70" y2="38" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* 8. Adjustable Wrench - Top Left 2 */}
+          <svg className="absolute top-1/3 left-1/4 w-32 h-28 animate-float" viewBox="0 0 130 100">
+            <path d="M 20 45 L 20 35 L 35 35 L 35 25 L 45 25 L 45 55 L 35 55 L 35 45 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <rect x="30" y="30" width="8" height="20" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="55" cy="40" r="5" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="45" y="35" width="70" height="10" rx="2" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="60" y1="37" x2="60" y2="43" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="70" y1="37" x2="70" y2="43" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="80" y1="37" x2="80" y2="43" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="90" y1="37" x2="90" y2="43" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* 9. Stacked Bricks - Bottom Center */}
+          <svg className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-32 h-28 animate-slide" viewBox="0 0 120 100">
+            <rect x="20" y="60" width="80" height="20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="60" y1="60" x2="60" y2="80" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="30" y="40" width="60" height="20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="60" y1="40" x2="60" y2="60" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="40" y="20" width="40" height="20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <rect x="35" y="65" width="8" height="10" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+            <rect x="52" y="65" width="8" height="10" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+            <rect x="68" y="65" width="8" height="10" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* 10. Wheelbarrow - Bottom Right 2 */}
+          <svg className="absolute bottom-10 right-1/4 w-36 h-32 animate-drift" viewBox="0 0 140 120">
+            <circle cx="50" cy="90" r="20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <circle cx="50" cy="90" r="12" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="50" cy="90" r="4" fill="#d4af37"/>
+            <line x1="50" y1="70" x2="50" y2="110" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="30" y1="90" x2="70" y2="90" stroke="#d4af37" strokeWidth="1.5"/>
+            <path d="M 50 90 L 60 70 L 70 50 L 110 50 L 115 60 L 115 70 L 60 70 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="110" y1="50" x2="115" y2="30" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="115" y1="70" x2="120" y2="50" stroke="#d4af37" strokeWidth="2.5"/>
+            <circle cx="115" cy="27" r="3" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="120" cy="47" r="3" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+        </div>
+
+        <div className="container-custom relative z-30">
+          <div className={`text-center mb-16 transition-all duration-1000 ${servicesInView ? 'translate-y-0 opacity-100' : '-translate-y-20 opacity-0'}`}>
+            <span className="text-golden-500 font-semibold tracking-wider uppercase text-5xl" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2)' }}>
               Our Services
             </span>
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mt-4 mb-6">
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mt-4 mb-6" style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.2)' }}>
               What We Do Best
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -288,7 +910,10 @@ export default function Home() {
             {services.map((service, i) => (
               <div
                 key={i}
-                className="group relative h-[500px] rounded-2xl overflow-hidden cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500"
+                className={`group relative h-[500px] rounded-2xl overflow-hidden cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-1000 ${
+                  servicesInView ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-20 scale-75 opacity-0'
+                }`}
+                style={{ transitionDelay: `${i * 200}ms` }}
               >
                 {/* Auto-changing image carousel for each service card */}
                 {service.images.map((image, imageIndex) => (
@@ -341,7 +966,7 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="text-center mt-12">
+          <div className={`text-center mt-12 transition-all duration-1000 delay-[600ms] ${servicesInView ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}>
             <Link
               href="/services"
               className="inline-block px-10 py-4 bg-gradient-to-r from-golden-500 to-golden-600 hover:from-golden-600 hover:to-golden-700 text-white font-semibold text-lg rounded-xl transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105"
@@ -353,13 +978,200 @@ export default function Home() {
       </section>
 
       {/* Featured Projects */}
-      <section className="py-24 bg-white">
-        <div className="container-custom">
-          <div className="text-center mb-16">
-            <span className="text-golden-500 font-semibold tracking-wider uppercase text-sm">
+      <section id="portfolio-section" className="relative py-24 bg-white overflow-hidden">
+        {/* Blueprint Background - Same as About Us */}
+        <div className="absolute inset-0 w-full h-full opacity-[0.15]">
+          {/* Grid Lines */}
+          <div className="absolute inset-0" style={{
+            backgroundImage: `
+              linear-gradient(to right, #d4af37 1px, transparent 1px),
+              linear-gradient(to bottom, #d4af37 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px',
+            backgroundPosition: '0 25px'
+          }}></div>
+
+          {/* Geometrical Shapes */}
+          <svg className="absolute top-20 left-1/4 w-16 h-16 opacity-20" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          <svg className="absolute top-1/3 left-1/2 w-20 h-20 opacity-20" viewBox="0 0 100 100">
+            <polygon points="50,10 90,85 10,85" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="50" y1="10" x2="50" y2="85" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          <svg className="absolute bottom-32 right-1/4 w-20 h-20 opacity-20" viewBox="0 0 100 100">
+            <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="50" cy="50" r="3" fill="#d4af37"/>
+          </svg>
+
+          {/* Compass Symbol */}
+          <svg className="absolute top-10 right-10 w-24 h-24 opacity-20" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="50" y1="5" x2="50" y2="25" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="50" y1="75" x2="50" y2="95" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="5" y1="50" x2="25" y2="50" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="75" y1="50" x2="95" y2="50" stroke="#d4af37" strokeWidth="2"/>
+            <polygon points="50,20 55,50 50,45 45,50" fill="#d4af37"/>
+          </svg>
+
+          {/* Ruler Symbol */}
+          <svg className="absolute bottom-10 left-10 w-32 h-8 opacity-20" viewBox="0 0 200 40">
+            <rect x="0" y="0" width="200" height="40" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="20" y1="0" x2="20" y2="15" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="40" y1="0" x2="40" y2="20" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="60" y1="0" x2="60" y2="15" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="80" y1="0" x2="80" y2="20" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="100" y1="0" x2="100" y2="25" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="120" y1="0" x2="120" y2="15" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="140" y1="0" x2="140" y2="20" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="160" y1="0" x2="160" y2="15" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="180" y1="0" x2="180" y2="20" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* Corner Brackets */}
+          <svg className="absolute top-5 left-5 w-16 h-16 opacity-50" viewBox="0 0 50 50">
+            <polyline points="15,0 0,0 0,15" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+          <svg className="absolute top-5 right-5 w-16 h-16 opacity-50" viewBox="0 0 50 50">
+            <polyline points="35,0 50,0 50,15" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+          <svg className="absolute bottom-5 left-5 w-16 h-16 opacity-50" viewBox="0 0 50 50">
+            <polyline points="15,50 0,50 0,35" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+          <svg className="absolute bottom-5 right-5 w-16 h-16 opacity-50" viewBox="0 0 50 50">
+            <polyline points="35,50 50,50 50,35" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+        </div>
+
+        {/* Real Construction Instruments - Same as About Us */}
+        <div className="absolute inset-0 w-full h-full opacity-[0.35] z-20">
+          {/* 1. Measuring Tape */}
+          <svg className="absolute top-1/4 left-20 w-32 h-32 animate-float" viewBox="0 0 120 120">
+            <rect x="30" y="30" width="60" height="50" rx="8" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <circle cx="60" cy="55" r="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="85" y="48" width="20" height="14" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="105" y1="50" x2="105" y2="62" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="98" y1="50" x2="98" y2="62" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="92" y1="50" x2="92" y2="57" stroke="#d4af37" strokeWidth="1"/>
+            <path d="M 105 52 L 110 52 L 110 60 L 105 60" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="40" y1="42" x2="55" y2="42" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="40" y1="50" x2="50" y2="50" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* 2. Spirit Level */}
+          <svg className="absolute top-16 right-24 w-36 h-24 animate-sway" viewBox="0 0 140 80">
+            <rect x="10" y="25" width="120" height="30" rx="4" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <ellipse cx="70" cy="40" rx="20" ry="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="70" cy="40" r="4" fill="#d4af37"/>
+            <rect x="8" y="23" width="8" height="34" rx="2" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="124" y="23" width="8" height="34" rx="2" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="40" y1="40" x2="40" y2="48" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="100" y1="40" x2="100" y2="48" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* 3. Trowel */}
+          <svg className="absolute top-20 right-1/3 w-28 h-32 animate-bounce-slow" viewBox="0 0 100 120">
+            <path d="M 50 20 L 80 45 L 70 75 L 30 75 L 20 45 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <rect x="45" y="75" width="10" height="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="40" y="83" width="20" height="30" rx="10" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="45" y1="88" x2="55" y2="88" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="45" y1="93" x2="55" y2="93" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="45" y1="98" x2="55" y2="98" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="45" y1="103" x2="55" y2="103" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* 4. Power Drill */}
+          <svg className="absolute top-1/2 right-32 w-32 h-28 animate-hammer" viewBox="0 0 120 100">
+            <rect x="30" y="35" width="50" height="25" rx="3" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <rect x="80" y="38" width="15" height="19" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="102" cy="47.5" r="5" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="107" y1="47.5" x2="115" y2="47.5" stroke="#d4af37" strokeWidth="2"/>
+            <path d="M 30 60 L 20 70 L 20 80 L 30 85 L 35 80 L 35 65 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <rect x="27" y="65" width="6" height="10" rx="1" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+            <rect x="32" y="60" width="15" height="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+
+          {/* 5. Hand Saw */}
+          <svg className="absolute bottom-16 right-20 w-40 h-28 animate-slide" viewBox="0 0 150 100">
+            <path d="M 20 40 L 120 30 L 120 35 L 20 45 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <path d="M 30 45 L 35 50 L 40 45 L 45 50 L 50 45 L 55 50 L 60 45 L 65 50 L 70 45 L 75 50 L 80 45 L 85 50 L 90 45 L 95 50 L 100 45 L 105 50 L 110 45 L 115 50 L 120 45"
+                  fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <path d="M 20 25 Q 15 32.5, 20 40 L 35 40 L 35 25 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <circle cx="25" cy="32.5" r="4" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* 6. Shovel */}
+          <svg className="absolute bottom-12 left-20 w-28 h-36 animate-drift" viewBox="0 0 100 140">
+            <path d="M 40 90 L 35 110 Q 50 120, 65 110 L 60 90 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <rect x="45" y="80" width="10" height="15" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="50" y1="80" x2="50" y2="20" stroke="#d4af37" strokeWidth="2.5"/>
+            <path d="M 50 20 L 40 20 Q 35 20, 35 25 L 35 35 Q 35 40, 40 40 L 50 40" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="38" y1="25" x2="38" y2="35" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="42" y1="25" x2="42" y2="35" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="46" y1="25" x2="46" y2="35" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* 7. Safety Helmet with Goggles */}
+          <svg className="absolute top-1/2 left-28 w-32 h-28 animate-rotate" viewBox="0 0 120 120">
+            <path d="M 25 70 Q 25 35, 60 25 Q 95 35, 95 70" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <ellipse cx="60" cy="70" rx="38" ry="10" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <path d="M 30 50 Q 60 45, 90 50" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <ellipse cx="45" cy="55" rx="10" ry="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <ellipse cx="75" cy="55" rx="10" ry="8" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="55" y1="55" x2="65" y2="55" stroke="#d4af37" strokeWidth="2"/>
+            <line x1="50" y1="38" x2="55" y2="38" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="65" y1="38" x2="70" y2="38" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* 8. Adjustable Wrench */}
+          <svg className="absolute top-1/3 left-1/4 w-32 h-28 animate-float" viewBox="0 0 130 100">
+            <path d="M 20 45 L 20 35 L 35 35 L 35 25 L 45 25 L 45 55 L 35 55 L 35 45 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <rect x="30" y="30" width="8" height="20" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="55" cy="40" r="5" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="45" y="35" width="70" height="10" rx="2" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="60" y1="37" x2="60" y2="43" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="70" y1="37" x2="70" y2="43" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="80" y1="37" x2="80" y2="43" stroke="#d4af37" strokeWidth="1"/>
+            <line x1="90" y1="37" x2="90" y2="43" stroke="#d4af37" strokeWidth="1"/>
+          </svg>
+
+          {/* 9. Stacked Bricks */}
+          <svg className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-32 h-28 animate-slide" viewBox="0 0 120 100">
+            <rect x="20" y="60" width="80" height="20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="60" y1="60" x2="60" y2="80" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="30" y="40" width="60" height="20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="60" y1="40" x2="60" y2="60" stroke="#d4af37" strokeWidth="2"/>
+            <rect x="40" y="20" width="40" height="20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <rect x="35" y="65" width="8" height="10" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+            <rect x="52" y="65" width="8" height="10" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+            <rect x="68" y="65" width="8" height="10" fill="none" stroke="#d4af37" strokeWidth="1.5"/>
+          </svg>
+
+          {/* 10. Wheelbarrow */}
+          <svg className="absolute bottom-10 right-1/4 w-36 h-32 animate-drift" viewBox="0 0 140 120">
+            <circle cx="50" cy="90" r="20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <circle cx="50" cy="90" r="12" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="50" cy="90" r="4" fill="#d4af37"/>
+            <line x1="50" y1="70" x2="50" y2="110" stroke="#d4af37" strokeWidth="1.5"/>
+            <line x1="30" y1="90" x2="70" y2="90" stroke="#d4af37" strokeWidth="1.5"/>
+            <path d="M 50 90 L 60 70 L 70 50 L 110 50 L 115 60 L 115 70 L 60 70 Z" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="110" y1="50" x2="115" y2="30" stroke="#d4af37" strokeWidth="2.5"/>
+            <line x1="115" y1="70" x2="120" y2="50" stroke="#d4af37" strokeWidth="2.5"/>
+            <circle cx="115" cy="27" r="3" fill="none" stroke="#d4af37" strokeWidth="2"/>
+            <circle cx="120" cy="47" r="3" fill="none" stroke="#d4af37" strokeWidth="2"/>
+          </svg>
+        </div>
+
+        <div className="container-custom relative z-30">
+          <div className={`text-center mb-16 transition-all duration-1000 ${portfolioInView ? 'translate-y-0 opacity-100' : '-translate-y-20 opacity-0'}`}>
+            <span className="text-golden-500 font-semibold tracking-wider uppercase text-5xl" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2)' }}>
               Portfolio
             </span>
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mt-4 mb-6">
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mt-4 mb-6" style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.2)' }}>
               Recent Projects
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -387,12 +1199,15 @@ export default function Home() {
               {
                 title: "Urban Loft Renovation",
                 location: "San Francisco, CA",
-                image: "https://images.unsplash.com/photo-1600607687644-c7171b42498b?q=80&w=2070&auto=format&fit=crop",
+                image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop",
               },
             ].map((project, i) => (
               <div
                 key={i}
-                className="group relative h-96 rounded-2xl overflow-hidden cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500"
+                className={`group relative h-96 rounded-2xl overflow-hidden cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-1000 ${
+                  portfolioInView ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-20 scale-90 opacity-0'
+                }`}
+                style={{ transitionDelay: `${i * 150}ms` }}
               >
                 <Image
                   src={project.image}
@@ -418,7 +1233,7 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="text-center mt-12">
+          <div className={`text-center mt-12 transition-all duration-1000 delay-[600ms] ${portfolioInView ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}>
             <Link
               href="/portfolio"
               className="inline-block px-10 py-4 bg-gradient-to-r from-golden-500 to-golden-600 hover:from-golden-600 hover:to-golden-700 text-white font-semibold text-lg rounded-xl transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105"
@@ -430,13 +1245,13 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 bg-gray-900 text-white">
-        <div className="container-custom">
-          <div className="text-center mb-16">
-            <span className="text-golden-400 font-semibold tracking-wider uppercase text-sm">
+      <section id="testimonials-section" className="relative py-24 bg-gray-900 text-white overflow-hidden">
+        <div className="container-custom relative z-30">
+          <div className={`text-center mb-16 transition-all duration-1000 ${testimonialsInView ? 'translate-y-0 opacity-100' : '-translate-y-20 opacity-0'}`}>
+            <span className="text-golden-400 font-semibold tracking-wider uppercase text-5xl" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.3)' }}>
               Testimonials
             </span>
-            <h2 className="text-5xl md:text-6xl font-bold mt-4 mb-6">
+            <h2 className="text-5xl md:text-6xl font-bold mt-4 mb-6" style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.4)' }}>
               Client Stories
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
@@ -462,24 +1277,37 @@ export default function Home() {
                 text: "Best construction partner we've ever worked with. Their expertise and dedication are unmatched in the industry.",
               },
             ].map((testimonial, i) => (
-              <div key={i} className="bg-gradient-to-br from-golden-900/20 via-gray-800/50 to-gray-800/50 backdrop-blur-sm p-8 rounded-xl border border-golden-700/30 hover:border-golden-500 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-golden-500/20">
-                <div className="flex mb-4">
+              <div
+                key={i}
+                className={`group bg-gradient-to-br from-golden-900/20 via-gray-800/50 to-gray-800/50 backdrop-blur-sm p-8 rounded-xl border border-golden-700/30 hover:border-golden-500 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-golden-500/30 hover:-translate-y-2 hover:from-golden-900/30 hover:via-gray-800/60 ${
+                  testimonialsInView ? 'translate-y-0 scale-100 opacity-100 transition-all duration-1000' : 'translate-y-20 scale-90 opacity-0 transition-all duration-1000'
+                }`}
+                style={{
+                  transitionDelay: testimonialsInView ? `${i * 150}ms` : '0ms'
+                }}
+              >
+                <div className="flex mb-4 gap-1">
                   {[...Array(5)].map((_, j) => (
-                    <svg key={j} className="w-5 h-5 text-golden-400" fill="currentColor" viewBox="0 0 20 20">
+                    <svg
+                      key={j}
+                      className="w-6 h-6 text-golden-400 transition-transform duration-300 hover:scale-125 hover:rotate-12"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                     </svg>
                   ))}
                 </div>
-                <p className="text-gray-300 italic text-lg mb-6 leading-relaxed">
+                <p className="text-gray-300 italic text-lg mb-6 leading-relaxed group-hover:text-white transition-colors duration-300">
                   &quot;{testimonial.text}&quot;
                 </p>
                 <div className="flex items-center">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-golden-400 to-golden-600 flex items-center justify-center text-white font-bold text-xl mr-4">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-golden-400 to-golden-600 flex items-center justify-center text-white font-bold text-xl mr-4 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 shadow-lg">
                     {testimonial.name.charAt(0)}
                   </div>
                   <div>
-                    <div className="font-bold text-lg">{testimonial.name}</div>
-                    <div className="text-golden-400 text-sm">{testimonial.role}</div>
+                    <div className="font-bold text-lg group-hover:text-golden-400 transition-colors duration-300">{testimonial.name}</div>
+                    <div className="text-golden-400 text-sm group-hover:text-golden-300 transition-colors duration-300">{testimonial.role}</div>
                   </div>
                 </div>
               </div>

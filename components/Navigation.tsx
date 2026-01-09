@@ -36,7 +36,7 @@ export default function Navigation() {
       className={`fixed w-full top-0 z-50 transition-all duration-500 ${
         isScrolled
           ? "bg-white/95 backdrop-blur-lg shadow-lg py-3"
-          : "bg-black/20 backdrop-blur-md py-0"
+          : "bg-black/20 backdrop-blur-md py-2"
       }`}
     >
       <div className="container-custom">
@@ -124,7 +124,9 @@ export default function Navigation() {
             isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div className="pb-4 bg-white pt-2 space-y-1">
+          <div className={`pb-4 pt-2 space-y-1 ${
+            isScrolled ? "bg-white" : "bg-black/30 backdrop-blur-md"
+          }`}>
             {navLinks.map((link, index) => {
               const isActive = pathname === link.href;
               return (
@@ -132,9 +134,13 @@ export default function Navigation() {
                   key={link.href}
                   href={link.href}
                   className={`block py-3 px-4 rounded-lg font-medium transition-all duration-300 transform ${
-                    isActive
-                      ? "bg-golden-50 text-golden-600 translate-x-2"
-                      : "text-gray-700 hover:text-golden-600 hover:bg-golden-50 hover:translate-x-2"
+                    isScrolled
+                      ? isActive
+                        ? "bg-golden-50 text-golden-600 translate-x-2"
+                        : "text-gray-700 hover:text-golden-600 hover:bg-golden-50 hover:translate-x-2"
+                      : isActive
+                        ? "bg-white/20 text-golden-400 translate-x-2"
+                        : "text-white hover:text-golden-400 hover:bg-white/10 hover:translate-x-2"
                   }`}
                   onClick={() => setIsOpen(false)}
                   style={{
@@ -144,7 +150,7 @@ export default function Navigation() {
                   <span className="flex items-center">
                     {isActive && (
                       <svg
-                        className="w-4 h-4 mr-2 text-golden-500"
+                        className={`w-4 h-4 mr-2 ${isScrolled ? "text-golden-500" : "text-golden-400"}`}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
