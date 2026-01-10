@@ -57,7 +57,11 @@ export default function Home() {
   const [servicesInView, setServicesInView] = useState(false);
   const [portfolioInView, setPortfolioInView] = useState(false);
   const [testimonialsInView, setTestimonialsInView] = useState(false);
+  const [currentWord, setCurrentWord] = useState(0);
   const { openModal } = useContactModal();
+
+  // Words to rotate in hero section
+  const rotatingWords = ["Designing", "Reshaping", "Enhancing"];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,6 +70,14 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Rotate words in hero section every 2.8 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentWord((prev) => (prev === rotatingWords.length - 1 ? 0 : prev + 1));
+    }, 2800); // Change every 2.8 seconds (much faster for overlap - new word starts while old fades)
+    return () => clearInterval(interval);
+  }, [rotatingWords.length]);
 
   // Auto-change images every 2 seconds in About section
   useEffect(() => {
@@ -309,55 +321,129 @@ export default function Home() {
         .animate-bounce-slow {
           animation: bounce-slow 5s ease-in-out infinite;
         }
+
+        /* Hero Background Zoom Animation */
+        @keyframes slowZoom {
+          0% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.1);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+
+        .animate-slowZoom {
+          animation: slowZoom 20s ease-in-out infinite;
+        }
+
+        /* Rotating Word Animation - Slide Up + Fade Together */
+        @keyframes slideUpFade {
+          0% {
+            transform: translateY(100%);
+            opacity: 0;
+          }
+          15% {
+            transform: translateY(0);
+            opacity: 1;
+          }
+          70% {
+            transform: translateY(0);
+            opacity: 1;
+          }
+          85% {
+            transform: translateY(-50%);
+            opacity: 0.5;
+          }
+          100% {
+            transform: translateY(-100%);
+            opacity: 0;
+          }
+        }
+
+        .word-container {
+          display: inline-block;
+          position: relative;
+        }
+
+        @media (max-width: 639px) {
+          .word-container {
+            display: block !important;
+            width: 100% !important;
+          }
+        }
+
+        @media (min-width: 640px) {
+          .word-container {
+            display: inline-block;
+            height: auto;
+          }
+        }
+
+        .rotating-word {
+          display: block;
+          animation: slideUpFade 3.5s cubic-bezier(0.4, 0, 0.2, 1);
+          white-space: nowrap;
+        }
       `}</style>
 
       {/* Hero Section - Full Screen with Real Professional Image */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image - Construction Site Sunset Silhouette */}
-        <div className="absolute inset-0">
+        {/* Background Image - Construction Site Sunset Silhouette with Animation */}
+        <div className="absolute inset-0 animate-slowZoom">
           <Image
-            src="/images/hero-sunset.png"
+            src="/images/hero-sunset-new.png"
             alt="Construction Site at Sunset"
             fill
-            className="object-cover"
+            className="object-cover blur-sm"
             priority
             quality={100}
           />
         </div>
 
-        {/* Minimal Overlay with slight blur */}
-        <div className="absolute inset-0 backdrop-blur-[2px] bg-gradient-to-r from-black/30 via-black/15 to-transparent"></div>
+        {/* Minimal Overlay without blur for crystal clear image */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/15 to-transparent"></div>
 
         {/* Content */}
-        <div className="relative z-10 container-custom text-white px-8">
+        <div className="relative z-10 container-custom text-white px-4 sm:px-6 md:px-8">
           <div className="max-w-4xl">
-            <div className="mb-6 inline-block">
-              <span className="text-golden-400 font-semibold tracking-[0.3em] text-sm uppercase">
+            <div className="mb-4 sm:mb-6 inline-block">
+              <span className="text-golden-400 font-semibold tracking-[0.2em] sm:tracking-[0.3em] text-sm sm:text-base md:text-lg lg:text-xl uppercase">
                 Premium Construction Services
               </span>
             </div>
 
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-8 leading-[1.1] tracking-tight">
-              Building Dreams<br />
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-[1.3] tracking-tight">
+              {/* Mobile: 3 lines, Desktop: 2 lines */}
+              <div className="flex flex-col sm:flex-row sm:items-baseline sm:whitespace-nowrap sm:flex-wrap">
+                <span className="word-container sm:w-auto sm:min-w-[200px] md:min-w-[315px] lg:min-w-[395px]">
+                  <span className="rotating-word" key={currentWord}>
+                    {rotatingWords[currentWord]}
+                  </span>
+                </span>
+                <span className="sm:ml-3">Dreams</span>
+              </div>
               <span className="text-golden-400">Into Reality</span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-gray-200 mb-12 leading-relaxed max-w-2xl font-light">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 mb-8 md:mb-12 leading-relaxed max-w-2xl font-light">
               25+ years of excellence in residential and commercial construction.
               Your vision, our expertise, delivered with perfection.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-6">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
               <button
                 onClick={openModal}
-                className="px-10 py-5 bg-gradient-to-r from-golden-500 to-golden-600 hover:from-golden-600 hover:to-golden-700 text-white font-semibold text-lg rounded-xl transition-all duration-300 shadow-md hover:shadow-xl text-center hover:scale-105"
+                className="px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 bg-gradient-to-r from-golden-500 to-golden-600 hover:from-golden-600 hover:to-golden-700 text-white font-semibold text-base sm:text-lg rounded-xl transition-all duration-300 shadow-md hover:shadow-xl text-center hover:scale-105"
               >
                 Start Your Project
               </button>
 
               <Link
                 href="/portfolio"
-                className="px-10 py-5 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white font-semibold text-lg rounded-xl border-2 border-white/30 hover:border-white/50 transition-all duration-300 text-center hover:scale-105 shadow-lg"
+                className="px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white font-semibold text-base sm:text-lg rounded-xl border-2 border-white/30 hover:border-white/50 transition-all duration-300 text-center hover:scale-105 shadow-lg"
               >
                 View Our Work
               </Link>
